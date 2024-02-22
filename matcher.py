@@ -1,9 +1,9 @@
-from dataclasses import dataclass
-from typing import Dict, Tuple
+import csv
 import itertools
 import random
-import csv
 import sys
+from dataclasses import dataclass
+from typing import Dict, Tuple
 
 
 @dataclass
@@ -62,11 +62,6 @@ def pairing(persons):
     return matched_pairs_sorted
 
 
-# def pooling(persons):
-#     pool = set(x.name for x in persons)
-#     return pool
-
-
 def create_round(matched_pairs_sorted, original_pool: set[str]):
     pool = original_pool.copy()
     new_round = []
@@ -121,22 +116,12 @@ if __name__ == '__main__':
     # ]
 
     # todo
-    # poprawić generowanie persons
     # ocena rozwiązania (suma całej rundy)
     # minimalna modyfikacja rundy(?)
 
     pairs = pairing(persons)
-    # pool = pooling(persons)
     no = 8
-
-    # while len(pairs) > 0:
-    #     x = create_round(pairs, pool)
-    #     print(x)
 
     for n in range(no):
         x = create_round(pairs, pool)
         print(x)
-
-    # print(pairs)
-    # print(pool)
-    # print(create_round(pairs, pool))
