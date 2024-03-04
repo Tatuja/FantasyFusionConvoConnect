@@ -31,7 +31,7 @@ class MatchedPair:
 
 
 def parse_csv(path) -> tuple[list[Person], set[str]]:
-    with open('input_file.csv', newline='') as input_file:
+    with open(path, newline='') as input_file:
         csvreader = csv.reader(input_file, delimiter=',')
         header = next(csvreader)
         names_pool = header[1:]
@@ -105,4 +105,7 @@ if __name__ == '__main__':
 
     for n in range(no):
         x = create_round(pairs, pool)
-        print(x)
+        print(f'Round {n+1}')
+        for pair in x:
+            print(f'{pair.names[0]} - {pair.names[1]}, score: {pair.score}')
+        print('')
