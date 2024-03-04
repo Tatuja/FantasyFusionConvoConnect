@@ -8,10 +8,6 @@ from typing import Dict, Tuple
 
 @dataclass
 class Person:
-    # NAMES: ClassVar[List[str]] = ['A', 'B', 'C', 'D', 'E', 'F']
-
-    # A: ClassVar[Dict[str, int]] = {'B': 2, 'C': 9, 'D' : 10, 'E': 0, 'F': 5}
-
     name: str
     preferences: Dict[str, int]
 
@@ -49,7 +45,7 @@ def parse_csv(path) -> tuple[list[Person], set[str]]:
                 if rated_name == name:
                     continue
                 else:
-                    preferences['idx'] = int(rating)
+                    preferences[rated_name] = int(rating)
 
             persons.append(Person(name, preferences))
         return persons, set(names_pool)
@@ -65,11 +61,15 @@ def pairing(persons):
 def create_round(matched_pairs_sorted, original_pool: set[str]):
     pool = original_pool.copy()
     new_round = []
-    ignored = None
     iteration = 0
     max_iteration = 3 * len(pool)
     while len(new_round) < len(original_pool) // 2 and iteration < max_iteration:
-        if new_round:
+        if len(pairs) < len(original_pool) // 2:
+            last_round = pairs.copy()
+            pairs.clear()
+            return last_round
+        ignored = None
+        if new_round and pairs:
             ignored = new_round.pop(random.randrange(0, len(new_round)))
             pool.add(ignored.names[0])
             pool.add(ignored.names[1])
@@ -93,34 +93,15 @@ def round_cleaner(matched_pairs_sorted, a_round):
 
 
 if __name__ == '__main__':
-
-    persons, pool = parse_csv(sys.argv[1])
-
-    # persons = [
-    #     Person('A', {'B': 2, 'C': 1, 'D': 3, 'E': 4, 'F': 5}),
-    #     # Dla litery B
-    #     Person('B', {'A': 3, 'C': 1, 'D': 4, 'E': 2, 'F': 5}),
-    #
-    #     # Dla litery C
-    #     Person('C', {'A': 5, 'B': 2, 'D': 1, 'E': 4, 'F': 3}),
-    #
-    #     # Dla litery D
-    #     Person('D', {'A': 4, 'B': 2, 'C': 5, 'E': 3, 'F': 1}),
-    #
-    #     # Dla litery E
-    #     Person('E', {'A': 4, 'B': 2, 'C': 5, 'D': 1, 'F': 3}),
-    #
-    #     # Dla litery F
-    #     #Person('F', {'A': 2, 'B': 1, 'C': 4, 'D': 3, 'E': 5})
-    #     Person('F', {'A': 4, 'B': 2, 'C': 5, 'D': 1, 'E': 3})
-    # ]
-
-    # todo
-    # ocena rozwiązania (suma całej rundy)
-    # minimalna modyfikacja rundy(?)
+    try:
+        persons, pool = parse_csv(sys.argv[1])
+        no = int(sys.argv[2])
+    except:
+        print('Wrong parameters.')
+        print('Expected csv file path and number of round, eg:\n    ./matcher.py path/data.csv 5')
+        exit(-1)
 
     pairs = pairing(persons)
-    no = 8
 
     for n in range(no):
         x = create_round(pairs, pool)
